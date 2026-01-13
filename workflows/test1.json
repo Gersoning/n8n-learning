@@ -1,0 +1,105 @@
+{
+  "name": "test1",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "FORMULARIO",
+        "formDescription": "RESPONDA",
+        "formFields": {
+          "values": [
+            {
+              "fieldName": "NOMBRE",
+              "fieldLabel": "NOMBRE",
+              "placeholder": "NOMBRE",
+              "requiredField": true
+            },
+            {
+              "fieldName": "EMAIL",
+              "fieldLabel": "EMAIL",
+              "fieldType": "email",
+              "placeholder": "EMAIL",
+              "requiredField": true
+            },
+            {
+              "fieldName": "MENSAJE",
+              "fieldLabel": "MENSAJE",
+              "fieldType": "textarea",
+              "placeholder": "MENSAJE",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.4,
+      "position": [
+        -368,
+        -16
+      ],
+      "id": "0c2e981b-7fdf-4551-ae29-e63744aacd26",
+      "name": "On form submission",
+      "webhookId": "1137fc41-8162-43be-9e11-d507ef16c256"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=EVALUA A VER SI ESTO ES PARA UNA DEMO {{ $json.MENSAJE }} Y ASIGNALE LA PALABRA DEMO COMO OUTPUT PARA EL SIGUIENTE PASO"
+            },
+            {}
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        -16
+      ],
+      "id": "0a561eed-c7d2-4fdf-801b-93ad0133f5ea",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JrBzXVgvkf9cbMF4",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "5b5f45d1-45a6-4b83-87c4-a90607b1c9d5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a0adb63cf9383179ceae7cb7f79b9a535831a8dfe59d95cd2f34172ea2365c29"
+  },
+  "id": "LKNjoP_WluY6AQvEZF5Sk",
+  "tags": []
+}
