@@ -1,0 +1,6 @@
+# n8n local data (credenciales y usuario)
+n8n_data/
+
+# logs
+*.log
+
