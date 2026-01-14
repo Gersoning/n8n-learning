@@ -34,7 +34,7 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.4,
       "position": [
-        -368,
+        -912,
         -16
       ],
       "id": "0c2e981b-7fdf-4551-ae29-e63744aacd26",
@@ -43,37 +43,184 @@
     },
     {
       "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "models/gemini-2.5-flash",
-          "mode": "list",
-          "cachedResultName": "models/gemini-2.5-flash"
-        },
-        "messages": {
-          "values": [
+        "assignments": {
+          "assignments": [
             {
-              "content": "=EVALUA A VER SI ESTO ES PARA UNA DEMO {{ $json.MENSAJE }} Y ASIGNALE LA PALABRA DEMO COMO OUTPUT PARA EL SIGUIENTE PASO"
+              "id": "68681503-b14a-4b31-bd70-40480de82b31",
+              "name": "NOMBRE",
+              "value": "={{ $json.NOMBRE }}",
+              "type": "string"
             },
-            {}
+            {
+              "id": "0cc2078b-1477-497d-bac1-436745d5ba8b",
+              "name": "EMAIL",
+              "value": "={{ $json.EMAIL }}",
+              "type": "string"
+            },
+            {
+              "id": "e00d4df2-7a7c-4ae3-bd39-dd52033e9b24",
+              "name": "MENSAJE",
+              "value": "={{ $json.MENSAJE }}",
+              "type": "string"
+            }
           ]
         },
-        "builtInTools": {},
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1.1,
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        -80,
+        -704,
         -16
       ],
-      "id": "0a561eed-c7d2-4fdf-801b-93ad0133f5ea",
-      "name": "Message a model",
+      "id": "d0258013-a02d-4014-9916-b4a28dff641a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a00b2d38-2e71-4145-a28c-4e39b2a53480",
+              "leftValue": "={{ $json.MENSAJE }}",
+              "rightValue": "DEMO",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -496,
+        -16
+      ],
+      "id": "44f52f1e-d3a2-4533-abeb-ffa051566b37",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "963ed8a2-bd39-4f31-8ac4-14a16dc3a816",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "NO",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        96,
+        -16
+      ],
+      "id": "b05cc35a-f823-4457-a0f9-14c190912656",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.MENSAJE }}",
+        "options": {
+          "systemMessage": "CATALOGAME EL MENSAJE EN UNA DE ESTAS OPCIONES: \"INTERESADO\" SI EL MENSAJE CONTIENE LA PALABRA DEMO O TIENE ALGO QUE VER CON QUE EL CLIENTE QUIERE PROBAR EL SERIVICO QUE VENDO, Y  LA CATEGORIA \"NO ESTA INTERESADO\" SI RECHAZA LA OFERTA"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "f1261324-b074-4aa7-80be-e6bd506e507f",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "maxTries": 5
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        208
+      ],
+      "id": "89594aea-5342-41a6-96aa-4f2ef031294c",
+      "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
           "id": "JrBzXVgvkf9cbMF4",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
+    },
+    {
+      "parameters": {
+        "sendTo": "ing.gersoncp@gmail.com",
+        "subject": "EXITO",
+        "message": "FLUJO COMPLETADO CON EXITO, QUIERE UNA DEMO",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        304,
+        -112
+      ],
+      "id": "d4c29e43-2d04-4362-8bed-6264b728bc64",
+      "name": "Send a message",
+      "webhookId": "39f3b517-8470-4ff9-875a-956ef0a7a4bd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "j6MlOvziBsBlkV6R",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "gersonecp@outlook.com",
+        "subject": "EXTIO",
+        "bodyContent": "FLUJO EJECUTADO CON EXITO, NO QUIERE EL PRODUCTO",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        304,
+        80
+      ],
+      "id": "4d2be05a-c253-45d2-b2e2-7a97ee555dfc",
+      "name": "Send a message1",
+      "webhookId": "99ef09a1-ba89-4dcd-abe0-c7b72bf1a539",
+      "disabled": true
     }
   ],
   "pinData": {},
@@ -82,8 +229,70 @@
       "main": [
         [
           {
-            "node": "Message a model",
+            "node": "Edit Fields",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -95,7 +304,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "5b5f45d1-45a6-4b83-87c4-a90607b1c9d5",
+  "versionId": "f506277d-33be-4b1f-8f72-2d8e7569d8df",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a0adb63cf9383179ceae7cb7f79b9a535831a8dfe59d95cd2f34172ea2365c29"
